@@ -1,2 +1,2 @@
 # GZHGZT01-hello-world
-新程序员的第一眼程序世界
+新程序员学习 GitHub 的第一步

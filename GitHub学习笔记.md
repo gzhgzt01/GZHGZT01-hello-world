@@ -801,3 +801,23 @@ Diff 看具体变化，
 SHA 锁定 Commit，
 Parent 找上一个版本，
 Browse files 看当时整个仓库。
+main
+│
+├── docs/
+│   └── GitHub学习笔记.md
+│
+└── 创建 Branch：lesson-03
+        ↓
+   编辑 GitHub学习笔记.md
+        ↓
+   添加“第三课”内容
+        ↓
+      Commit
+        ↓
+       PR
+        ↓
+      Diff
+        ↓
+      Merge
+        ↓
+       main

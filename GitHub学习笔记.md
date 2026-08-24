@@ -1765,3 +1765,574 @@ Commit 是记录，
 Push 是上传，
 Pull 是拉回，
 Merge 是合并。
+
+---
+
+# 第四课：使用 GitHub 项目与 Codex 协作的安全流程
+
+## 1. 本课目标
+
+掌握借鉴别人 GitHub 项目的正确流程。
+
+重点：
+
+- Clone 和 Fork 的区别
+- License 的重要性
+- origin 与 upstream 的区别
+- 为什么 AI 修改项目需要 Branch
+- 如何检查 Codex 修改结果
+- 如何安全合并 AI 修改
+
+---
+
+## 2. Clone 和 Fork 的区别
+
+### Clone
+
+Clone 是：
+
+把已有 Repository 复制到自己的电脑。
+
+流程：
+
+GitHub Repository
+↓
+git clone
+↓
+Local Repository
+
+
+适合：
+
+- 学习别人代码
+- 阅读项目结构
+- 本地运行测试
+- 临时研究
+
+
+---
+
+### Fork
+
+Fork 是：
+
+在自己的 GitHub 账号下创建一个项目副本。
+
+
+流程：
+
+原作者 GitHub Repository
+↓
+Fork
+↓
+自己的 GitHub Repository
+↓
+Clone
+↓
+自己的电脑
+
+
+适合：
+
+- 长期维护
+- 修改成自己的项目
+- 让 Codex 持续改造
+- 作为自己的开发基础
+
+
+---
+
+## 3. Fork 和 Clone 的选择
+
+只研究：
+
+→ Clone
+
+
+准备长期发展：
+
+→ Fork + Clone
+
+
+判断：
+
+“我只是看看？”
+
+Clone。
+
+
+“我要基于它开发自己的版本？”
+
+Fork 后 Clone。
+
+---
+
+## 4. License（许可证）
+
+GitHub 上公开代码，不代表可以无限制使用。
+
+
+常见：
+
+MIT：
+
+比较宽松。
+
+通常允许：
+
+- 使用
+- 修改
+- 商用
+
+但需要保留许可证信息。
+
+
+Apache 2.0：
+
+较宽松，并包含专利相关授权。
+
+
+GPL：
+
+有更强的开源要求。
+
+如果分发修改后的作品，需要注意许可证要求。
+
+
+没有 License：
+
+不能默认可以自由使用。
+
+公开 ≠ 自动授权。
+
+
+---
+
+## 5. Fork 项目的三方关系
+
+
+原作者 Repository
+
+        ↑
+        |
+    upstream
+
+        |
+        ↓
+
+     Local
+
+        |
+        |
+     origin
+
+        ↓
+
+你的 GitHub Fork
+
+
+---
+
+## 6. origin
+
+origin 是本地 Git 给远程仓库起的名字。
+
+通常：
+
+origin = 我的 GitHub Fork
+
+
+例如：
+
+git remote -v
+
+
+显示：
+
+origin
+https://github.com/myname/project.git
+
+
+表示：
+
+我的电脑连接到我的 GitHub 项目。
+
+
+---
+
+## 7. upstream
+
+upstream 是原作者仓库的常用名称。
+
+
+用途：
+
+获取原作者的新版本。
+
+
+例如：
+
+git remote add upstream 原作者地址
+
+
+以后：
+
+git fetch upstream
+
+
+查看原作者是否更新。
+
+
+---
+
+## 8. origin 与 upstream 区别
+
+
+origin：
+
+我的版本。
+
+
+用途：
+
+- Push 我的修改
+- 保存我的项目
+
+
+upstream：
+
+原作者版本。
+
+
+用途：
+
+- 获取原项目更新
+- 同步最新代码
+
+
+记忆：
+
+origin = 我的远程
+
+upstream = 原作者远程
+
+---
+
+## 9. 为什么 Codex 修改项目需要 Branch
+
+
+不要：
+
+main
+↓
+直接让 Codex 修改
+
+
+风险：
+
+- 修改范围不可控
+- 出错难恢复
+- 多个需求混在一起
+
+
+正确：
+
+main
+
+↓
+
+feature-new-function
+
+↓
+
+Codex 修改
+
+↓
+
+检查 Diff
+
+↓
+
+Merge
+
+
+---
+
+## 10. 一个需求一个 Branch
+
+
+推荐：
+
+feature-chinese-ui
+
+feature-login
+
+fix-payment-error
+
+
+不要：
+
+test
+
+new
+
+abc
+
+
+原因：
+
+以后容易知道：
+
+这个 Branch 做什么。
+
+---
+
+## 11. Codex 修改后的检查流程
+
+
+不要直接：
+
+Codex完成
+↓
+Commit
+
+
+正确：
+
+Codex修改
+
+↓
+
+git status
+
+
+查看：
+
+修改了哪些文件。
+
+
+↓
+
+git diff --stat
+
+
+查看：
+
+变化规模。
+
+
+↓
+
+git diff
+
+
+查看：
+
+具体修改。
+
+
+确认合理后：
+
+git add
+
+git commit
+
+git push
+
+
+---
+
+## 12. AI 修改审核原则
+
+
+需求小：
+
+修改范围应该小。
+
+
+例如：
+
+修改标题文字。
+
+合理：
+
+1个文件。
+
+风险：
+
+25个文件。
+
+需要检查：
+
+为什么需要这么多变化。
+
+
+---
+
+## 13. Fork 项目同步原作者更新
+
+
+原作者更新：
+
+upstream
+
+↓
+
+git fetch upstream
+
+↓
+
+查看变化
+
+↓
+
+merge upstream/main
+
+↓
+
+测试
+
+↓
+
+push origin
+
+
+---
+
+## 14. Codex 推荐工作流程
+
+
+发现项目
+
+↓
+
+查看 README
+
+↓
+
+查看 License
+
+↓
+
+决定 Clone 或 Fork
+
+↓
+
+Fork
+
+↓
+
+Clone
+
+↓
+
+建立 origin/upstream
+
+↓
+
+创建 Branch
+
+↓
+
+让 Codex 修改
+
+↓
+
+检查 Diff
+
+↓
+
+Commit
+
+↓
+
+Push
+
+↓
+
+Pull Request
+
+↓
+
+Merge
+
+
+---
+
+## 15. 本课实际操作
+
+
+完成：
+
+1. Fork：
+
+octocat/Spoon-Knife
+
+
+2. Clone：
+
+自己的 Fork
+
+
+3. 查看：
+
+git remote -v
+
+
+4. 建立：
+
+origin
+
+
+5. 添加：
+
+upstream
+
+
+得到：
+
+origin = 自己 GitHub
+
+upstream = 原作者 GitHub
+
+
+---
+
+## 16. 核心记忆
+
+
+Fork：
+
+复制到自己的 GitHub。
+
+
+Clone：
+
+复制到自己的电脑。
+
+
+origin：
+
+我的远程。
+
+
+upstream：
+
+原作者远程。
+
+
+Branch：
+
+AI 修改的安全空间。
+
+
+Diff：
+
+检查 AI 到底改了什么。
+
+
+一句话：
+
+不要直接让 AI 修改主版本。
+
+先 Fork，开 Branch，看 Diff，再 Merge。

@@ -2336,3 +2336,448 @@ Diff：
 不要直接让 AI 修改主版本。
 
 先 Fork，开 Branch，看 Diff，再 Merge。
+第六课
+---
+
+# 第六课：Codex 项目改造与 Git 安全恢复
+
+## 1. Codex 接手陌生项目
+
+不要一开始就让 Codex 修改代码。
+
+第一步：
+
+先分析，不修改。
+
+要求 Codex 说明：
+
+1. 项目用途
+2. 技术栈
+3. 启动方式
+4. 目录结构
+5. 核心模块
+6. 潜在风险
+7. 二次开发建议
+
+技术栈：
+
+这个项目是用哪些主要技术搭建起来的。
+
+例如：
+
+React + Node.js + PostgreSQL
+
+---
+
+## 2. 先小任务，再大任务
+
+第一次不要直接让 Codex：
+
+- 重构数据库
+- 修改登录系统
+- 接入支付
+
+先给低风险任务：
+
+- 修改文字
+- 修改图片
+- 修改简单页面
+
+目的：
+
+验证 Codex 是否真正理解项目。
+
+原则：
+
+低风险
+↓
+验证
+↓
+中风险
+↓
+测试
+↓
+高风险
+
+---
+
+## 3. 给 Codex 明确任务边界
+
+一个任务最好包含：
+
+目标：
+要完成什么。
+
+允许修改：
+哪些文件或模块可以修改。
+
+禁止修改：
+哪些地方不能动。
+
+验收标准：
+达到什么结果才算完成。
+
+例如：
+
+目标：
+首页中文化。
+
+允许修改：
+首页相关前端文件。
+
+禁止修改：
+登录、支付、数据库、配置。
+
+验收：
+中文显示正确，布局不变，其他功能正常。
+
+---
+
+## 4. Codex 完成 ≠ 验收完成
+
+Codex 的说明是报告。
+
+Git Diff 是实际变化的证据。
+
+检查顺序：
+
+git status
+↓
+查看哪些文件发生变化
+
+git diff --stat
+↓
+查看修改规模
+
+git diff
+↓
+查看具体修改内容
+
+原则：
+
+Codex 说了什么可以参考，
+Git 显示的实际变化必须检查。
+
+---
+
+## 5. git diff --stat
+
+git：
+
+使用 Git。
+
+diff：
+
+查看差异。
+
+--stat：
+
+statistics，统计摘要。
+
+所以：
+
+git diff --stat
+
+表示：
+
+查看当前修改的差异统计。
+
+例如：
+
+3 files changed
+48 insertions(+)
+17 deletions(-)
+
+用途：
+
+在阅读详细 Diff 前，
+先快速判断修改范围是否合理。
+
+---
+
+## 6. Branch、Diff、Commit
+
+Branch：
+
+安全实验室。
+
+用于隔离 Codex 的修改。
+
+Diff：
+
+检查单。
+
+用于确认 Codex 实际修改了什么。
+
+Commit：
+
+安全检查点 / 存档点。
+
+一个完整、可独立验收的小任务完成并测试通过后，
+建立一个 Commit。
+
+不要：
+
+所有功能最后一次 Commit。
+
+也不要：
+
+每改一个字就 Commit。
+
+---
+
+## 7. Codex 越修越乱怎么办
+
+原则：
+
+问题明确、范围可控：
+
+继续修。
+
+原因不明、修改范围持续扩大：
+
+停止继续打补丁，
+考虑回到最后一个可靠状态。
+
+记忆：
+
+小错就修，
+失控就退。
+
+---
+
+## 8. git restore
+
+适用于：
+
+修改还没有 Commit，
+并且确定这些修改不要。
+
+恢复单个文件：
+
+git restore auth.js
+
+表示：
+
+丢弃 auth.js 当前未提交的工作区修改，
+恢复到之前的版本。
+
+危险：
+
+未 Commit 的修改可能直接丢失。
+
+所以先：
+
+git status
+git diff
+
+确认后再 restore。
+
+---
+
+## 9. git restore .
+
+git restore .
+
+表示：
+
+恢复当前目录下的未暂存修改。
+
+风险比恢复单个文件高。
+
+原则：
+
+能精确恢复单个文件，
+优先不要 restore 全部文件。
+
+---
+
+## 10. git restore --staged
+
+如果已经：
+
+git add auth.js
+
+但是：
+
+修改内容还要保留，
+只是不准备现在 Commit。
+
+使用：
+
+git restore --staged auth.js
+
+作用：
+
+取消暂存。
+
+修改内容仍然保留。
+
+记忆：
+
+git restore --staged
+=
+撤销 add，不撤销修改。
+
+---
+
+## 11. git revert
+
+适用于：
+
+错误修改已经 Commit，
+尤其已经 Push 到 GitHub。
+
+例如：
+
+A：正常
+↓
+B：错误 Commit
+↓
+C：Revert B
+
+Revert 不删除 B。
+
+它创建一个新的 Commit，
+把 B 的修改反向撤销。
+
+优点：
+
+保留完整历史。
+
+已经 Push 的错误 Commit，
+通常优先考虑 revert。
+
+---
+
+## 12. git reset
+
+reset 可以把当前 Branch 的位置移动到以前的 Commit。
+
+常见：
+
+--soft
+--mixed
+--hard
+
+其中：
+
+git reset --hard
+
+风险最高。
+
+可能同时改变：
+
+- Branch 位置
+- 暂存区
+- 工作区
+
+并可能导致未保存修改丢失。
+
+原则：
+
+已经 Push 的共享历史，
+不要随便使用 reset --hard。
+
+自己的本地实验 Branch，
+没有 Push，
+并且明确需要重新整理历史时，
+才考虑 reset。
+
+---
+
+## 13. Restore / Revert / Reset 判断
+
+情况一：
+
+未 add，
+修改不要。
+
+→ git restore
+
+情况二：
+
+已经 add，
+修改要保留，
+只取消暂存。
+
+→ git restore --staged
+
+情况三：
+
+已经 Commit / Push，
+希望安全撤销并保留历史。
+
+→ git revert
+
+情况四：
+
+自己的本地实验 Branch，
+未 Push，
+需要重新整理 Commit 历史。
+
+→ git reset
+
+特别注意：
+
+git reset --hard
+
+谨慎使用。
+
+---
+
+## 14. Codex 安全开发完整流程
+
+陌生项目
+↓
+先分析，不修改
+↓
+制定改造计划
+↓
+拆成小任务
+↓
+定义修改范围和验收标准
+↓
+创建 Branch
+↓
+Codex 修改
+↓
+Codex 自检
+↓
+git status
+↓
+git diff --stat
+↓
+git diff
+↓
+测试
+↓
+git add
+↓
+git commit
+↓
+git push
+
+---
+
+## 15. 本课核心记忆
+
+Branch = 实验室
+
+Diff = 检查单
+
+Commit = 存档点
+
+Restore = 处理未提交修改
+
+Restore --staged = 撤销 add，保留修改
+
+Revert = 安全撤销已经进入历史的 Commit
+
+Reset = 重新定位本地历史，谨慎使用
+
+最重要：
+
+已经 Push 的错误 Commit，
+优先考虑 revert，
+不要随手 reset --hard。

@@ -2781,3 +2781,91 @@ Reset = 重新定位本地历史，谨慎使用
 已经 Push 的错误 Commit，
 优先考虑 revert，
 不要随手 reset --hard。
+## 27. 第三课考试错题与订正
+
+### 错题1：git add 后修改在哪里？
+
+错误理解：
+
+执行 git add 后，修改仍然属于 Working Tree。
+
+正确理解：
+
+修改文件
+↓
+Working Tree
+↓
+git add
+↓
+Staging Area
+↓
+git commit
+↓
+Local Repository
+↓
+git push
+↓
+Remote
+
+记忆：
+
+Add = 放入暂存区
+Commit = 形成本地版本记录
+Push = 推送到远程
+
+
+### 错题2：git commit 是否已经更新 GitHub？
+
+错误理解：
+
+git commit 成功后，可以认为 GitHub 已经更新。
+
+正确理解：
+
+git commit 默认创建的是 Local Commit。
+
+还需要：
+
+git push
+
+才能把本地 Commit 推送到 Remote。
+
+记忆：
+
+Commit ≠ Push
+
+
+### 错题3：Fetch 与 Pull
+
+场景：
+
+GitHub main = B
+本地 main = A
+origin/main = A
+
+执行：
+
+git fetch
+
+以后：
+
+本地 main = A
+origin/main = B
+
+也就是说 Fetch 更新的是：
+
+“本地 Git 对 Remote 最新状态的认识”。
+
+如果继续执行：
+
+git pull
+
+才会变成：
+
+本地 main = B
+origin/main = B
+
+记忆：
+
+Fetch = 知道远程变了
+Pull = 把远程变化真正整合进当前本地 Branch
